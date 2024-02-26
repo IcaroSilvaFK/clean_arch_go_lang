@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"net"
 	"net/http"
@@ -15,6 +14,7 @@ import (
 	graphql_handler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/IcaroSilvaFK/fcc-cleanArch/configs"
 	"github.com/IcaroSilvaFK/fcc-cleanArch/internal/event/handler"
+	database_provider "github.com/IcaroSilvaFK/fcc-cleanArch/internal/infra/database/mysql"
 	"github.com/IcaroSilvaFK/fcc-cleanArch/internal/infra/graph"
 	"github.com/IcaroSilvaFK/fcc-cleanArch/internal/infra/grpc/pb"
 	"github.com/IcaroSilvaFK/fcc-cleanArch/internal/infra/grpc/service"
@@ -28,20 +28,16 @@ func main() {
 		panic(err)
 	}
 
-	db, err := sql.Open(
-		configs.DBDriver,
-		fmt.Sprintf(
-			"%s:%s@tcp(%s:%s)/%s",
-			configs.DBUser,
-			configs.DBPassword,
-			configs.DBHost,
-			configs.DBPort,
-			configs.DBName,
-		),
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s",
+		configs.DBUser,
+		configs.DBPassword,
+		configs.DBHost,
+		configs.DBPort,
+		configs.DBName,
 	)
-	if err != nil {
-		panic(err)
-	}
+	db := database_provider.GetConnection(configs.DBDriver, dsn)
+
 	defer db.Close()
 
 	rabbitMQChannel := getRabbitMQChannel()
