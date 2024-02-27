@@ -88,3 +88,5 @@ const xmlResult = CategoryPresenter(output).toXML();
 - GRPC
 - CLI
 - ETC
+
+https://discord.gg/gxwzhMTE
