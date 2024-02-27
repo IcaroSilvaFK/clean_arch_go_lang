@@ -55,6 +55,12 @@ func (h *WebOrderHandler) ListOrders(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	if len(output) == 0 {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
 	err = json.NewEncoder(w).Encode(output)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
